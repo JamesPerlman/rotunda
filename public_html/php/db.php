@@ -1,6 +1,6 @@
 <?php
 	// connect to db
-	$link = mysql_connect('127.0.0.1', 'admin3sLgrat', '2clviRKHGxXQ');
+	$link = mysql_connect('127.0.0.1', 'adminrI7Qdbb', 'j4YB6Gm7Lvch');
 	/*if (!$link) {
 		die('Could not connect: ' . mysql_error());
 	}
