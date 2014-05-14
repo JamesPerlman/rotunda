@@ -8,7 +8,7 @@
 		$_SESSION["EXPIRES"] = time()+900;//expires in 15 minutes
 		// get links with admin data
 		if ($_SERVER['QUERY_STRING'] == 'getlinks') {
-			include 'php/db.php';
+			include 'php5/db.php';
 			
 		}
 	}
@@ -129,7 +129,7 @@ navitem("5", "some", "thing", "else")));*/
 		var user = document.forms.enter.user.value;
 		var pass = document.forms.enter.pass.value;
 		if (user.length<3 || pass.length<3 || !/^[a-z0-9_]+$/i.test(user)) return;
-		$.post("php/login.php", {u:user,p:window.Sha256.hash(pass)}, login);
+		$.post("php5/login.php", {u:user,p:window.Sha256.hash(pass)}, login);
 	}
 	function login(s) { // s for status: 1=true, 0=false
 		if (parseInt(s)) location.reload();

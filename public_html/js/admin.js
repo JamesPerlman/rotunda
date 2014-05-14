@@ -1,7 +1,7 @@
 // admin.js - created by James Perlman at 12:02am on Wednesday, April 23, 2014 in Austin, TX
 
 var d = new Directory();
-$.getJSON("php/data.php?getlinks",
+$.getJSON("php5/data.php?getlinks",
 	function(json) {
 		d.populate(json);
 		build(d.items);
@@ -15,14 +15,12 @@ var html = "";
 
 function build (arr) {
 	for (var i=0;i<arr.length;i++) {
-		
 		var obj=d.index[arr[i]];
-		if (obj.action) {
-			if (obj.action.constructor == Array) {
+		alert(obj.title);
+		if (obj.action ? obj.action.constructor == Array : 0) {
 				html += '<details><summary>'+navitem(obj)+'</summary>';
 				build(obj.action);
 				html += '</details>';
-			}
 		} else {
 			html += navitem(obj);
 		}

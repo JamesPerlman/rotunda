@@ -19,7 +19,7 @@
     </style>
     <link href="styles/index.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
-		var linkData = LinkMap.initFromJSON("php/data.php?getlinks");
+		var linkData = LinkMap.initFromJSON("php5/data.php?getlinks");
 		linkData.setOnLoad(function(){
 			lvc.init(linkData,document.getElementById("navcontainer"));
 		});
