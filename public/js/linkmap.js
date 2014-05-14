@@ -49,7 +49,7 @@ var LinkMap = (function() {
 			if(fid>=0&&fid<directory.folders.length) {
 				var folder = getFolderByID(fid);
 				for (var i=0;i<folder.length;i++)
-					action(directory.index[folder[i]]);
+					action(i,directory.index[folder[i]]);
 			}
 		}
 		function getLinkByID(id,f) {

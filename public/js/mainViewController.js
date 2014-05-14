@@ -3,7 +3,7 @@ var lvc = (function(){
 	var navFolders = [{x:0,z:0,id:0}];
 	var center = {x:500, y:500};
 	var cam = {x:0,y:.8,z:2};
-	var curLevel = 1;
+	var curLevel = 1, curFolder=0;
 	var cscale = 600;
 	var cur = -1;
 	var enabled = true;
@@ -156,12 +156,12 @@ var lvc = (function(){
 	}
 	// animation
 	function _changeFolder(id) {
-		enabled=false;
+		//enabled=false;
 		// check which direction we are moving (into a folder or out of one)
 		
-		model.eachIn(id, function(obj) {
-			alert(obj.view.x);
-		});
+		//model.eachIn(id, function(i,obj) {
+			//alert(obj.view.x);
+		//});
 	}
 	function _changeFolderTick() {
 	}
@@ -199,7 +199,7 @@ var lvc = (function(){
 	// rotate on a timer
 	function _rotateTo(id) {
 		var d;
-		if ((d=shortDist(rings[curLevel].length,cur,id))) {
+		if ((d=shortDist(rings[curFolder].length,cur,id))) {
 			enabled = false;
 			cur = id;
 			TweenLite.to($("#rotator"), d, 
@@ -216,7 +216,7 @@ var lvc = (function(){
 		TweenLite.ticker.removeEventListener("tick", lvc.rotateTick);
 		enabled = true;
 		var theta = rot_angle();
-		model.eachIn(curLevel, function(i,obj) {
+		model.eachIn(curFolder, function(i,obj) {
 			obj.view.draw();
 			obj.view.x = rings[curLevel][i].x;
 			obj.view.z = rings[curLevel][i].z;
@@ -224,7 +224,7 @@ var lvc = (function(){
 	}
 	function _rotateTick() {
 		var theta = rot_angle();
-		model.eachIn(curLevel, function(i,obj) {
+		model.eachIn(curFolder, function(i,obj) {
 			// change values
 			obj.view.x = Math.cos(-Math.PI/2-theta+rings[curLevel][i].t);
 			obj.view.z = Math.sin(-Math.PI/2-theta+rings[curLevel][i].t);
