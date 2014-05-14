@@ -1,11 +1,6 @@
 <?php
 	// connect to db
-	$link = mysql_connect('127.0.0.1', 'adminrI7Qdbb', 'j4YB6Gm7Lvch');
-	/*if (!$link) {
-		die('Could not connect: ' . mysql_error());
-	}
-	echo 'Connected successfully';
-	*/
-	mysql_select_db('james');
-echo mysql_error();
+	mysql_connect(getenv('OPENSHIFT_MYSQL_DB_HOST'), getenv('OPENSHIFT_MYSQL_DB_USERNAME'), getenv('OPENSHIFT_MYSQL_DB_PASSWORD'), "", getenv('OPENSHIFT_MYSQL_DB_PORT')) or die("Error: " . mysqli_error($mysqlCon));
+mysql_select_db('james') or die("Error: " . mysqli_error($mysqlCon));
+	//$link = mysql_connect('127.0.0.1', 'adminrI7Qdbb', 'j4YB6Gm7Lvch');
 ?>
