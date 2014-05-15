@@ -62,13 +62,13 @@ ButtonView.prototype.appendTo = function(element) {
 	element.appendChild(this.div);
 }
 ButtonView.prototype.setBase = function(x,y) {
-	this.div.style.bottom = (y-this.top.offsetHeight)+"px";
-	this.div.style.left = this.ref.left = (x-this.offset.x)+"px";
+	this.div.style.bottom = (y-this.top.offsetHeight) + "px";
+	this.div.style.left = this.ref.left = (x-this.offset.x) + "px";
 	//this.base = {x:x,y:y};
 }
 ButtonView.prototype.setCenter = function(x,y) {
-	this.div.style.bottom = (y+this.offset.y)+"%";
-	this.div.style.left = (x-this.offset.x)+"%";
+	this.div.style.bottom = (this.s*y+this.offset.y) +"%";
+	this.div.style.left = (this.s*x-this.offset.x) +"%";
 	this.center = {x:x,y:y};
 }
 ButtonView.prototype.setSize = function(size) {

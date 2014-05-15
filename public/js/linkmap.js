@@ -47,8 +47,7 @@ var LinkMap = (function() {
 		}
 		function enumLinksInFolder(fid,action) {
 			if(fid>=0&&fid<directory.folders.length) {
-				var folder = getFolderByID(fid);
-				for (var i=0;i<folder.length;i++)
+				for (var i=0,folder = directory.folders[getFolderIndexByID(fid)];i<folder.length;i++)
 					action(i,directory.index[folder[i]]);
 			}
 		}
@@ -56,10 +55,14 @@ var LinkMap = (function() {
 			if (f!=undefined) return directory.index[directory.folders[f][id]];
 			return directory.index[id];
 		}
-		function getFolderByID(id) {
+		function getLinkIndexInFolderByID(id) {
+			for (var i=0,folder=directory.folders[directory.index[id].folder];i<folder.length;i++)
+				if (folder[i]==id) return i;
+		}
+		function getFolderIndexByID(id) {
 			for (var i=0;i<directory.fdex.length;i++)
 				if (directory.fdex[i]==id) {
-					return directory.folders[i+1];
+					return i+1;
 				}
 		}
 		// singleton object
@@ -73,6 +76,8 @@ var LinkMap = (function() {
 			eachFolder : enumerateFolders,
 			eachIn : enumLinksInFolder,
 			getLink : getLinkByID,
+			getLinkIndex : getLinkIndexInFolderByID,
+			getFolderIndex : getFolderIndexByID,
 			count : function() { return directory.index.length; }
 		}
 	}

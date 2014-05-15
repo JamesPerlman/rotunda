@@ -3,7 +3,7 @@ var lvc = (function(){
 	var navFolders = [{x:0,z:0,id:0}];
 	var center = {x:500, y:500};
 	var cam = {x:0,y:.8,z:2};
-	var curLevel = 1, curFolder=0;
+	var curLevel = 1, lastLevel=1, curFolder=0, lastFolder=0;
 	var cscale = 600;
 	var cur = -1;
 	var enabled = true;
@@ -11,6 +11,7 @@ var lvc = (function(){
 	var minAngle = Math.PI/6;
 	var model, parent;
 	var rings = [];
+	var tEffect = 0.25;
 	// this is very messy
 	function build(linkdata,element) {
 		if (linkdata && element) {
@@ -49,7 +50,7 @@ var lvc = (function(){
 	
 	function addRing(n) {
 		var _max = Math.PI*1.5, _min=.5;
-		if (n<=7) { _max=Math.PI*.5; _min=-Math.PI/2; }
+		if (n<=7) { _max=Math.PI*.499; _min=-Math.PI*.499; }
 		var theta = n==1 ? Math.PI*.5 : (_max-_min)/(n-1);
 		var o = Math.PI/2+_min;
 		var ring=[];
@@ -156,17 +157,39 @@ var lvc = (function(){
 	}
 	// animation
 	function _changeFolder(id) {
-		//enabled=false;
-		// check which direction we are moving (into a folder or out of one)
 		
-		//model.eachIn(id, function(i,obj) {
-			//alert(obj.view.x);
-		//});
+		enabled=false;
+		lastFolder = curFolder;
+		curFolder = id;
+		lastLevel = curLevel;
+		curLevel = model.getFolderIndex(curFolder);
+		// check which direction we are moving (into a folder or out of one)
+		TweenLite.ticker.addEventListener("tick", lvc.changeFolderTick);
+		TweenLite.to($("#rotator"), tEffect, {directionalRotation: -90+"deg_short", onComplete:lvc.changeFolderDone});
+		var k = (id > lastFolder) ? 0 : 2;
+		model.eachIn(lastFolder, function(i,obj) {
+			TweenLite.to(obj.view, tEffect, {x:rings[lastLevel][i].x*k,z:rings[lastLevel][i].z*k});
+			TweenLite.to(obj.view.div, tEffect, {opacity:0});
+		});
+			
+		model.eachIn(curFolder, function(i,obj) {
+			obj.view.div.style.visibility = "visible";
+			TweenLite.to(obj.view, tEffect, {x:rings[curLevel][i].x,z:rings[curLevel][i].z});
+			TweenLite.to(obj.view.div, tEffect, {opacity:1});
+		});
 	}
 	function _changeFolderTick() {
+		
+		model.eachIn(curFolder, function(i,obj) { setPos3D(obj.view); });
+		model.eachIn(lastFolder, function(i,obj) { setPos3D(obj.view); });
+		sortByDepth();
 	}
 	function _changeFolderDone() {
-		_changeFolder(id);
+		enabled = true;
+		_changeFolderTick();
+		model.eachIn(lastFolder, function(i,obj) { obj.view.div.style.visibility="hidden"; });
+		TweenLite.ticker.removeEventListener("tick", lvc.changeFolderTick);
+		
 	}
 	// menu navigation
 	function _itemMouseClick(id) {
@@ -174,24 +197,22 @@ var lvc = (function(){
 		var obj = model.getLink(id);
 		// folder
 		if( typeof obj.action == "number") {
-			_changeFolder(id);
-		} else { // link
-			// init rotation
+			if (curFolder!=id) _changeFolder(id);
+		} else
 			_rotateTo(id);
-			
-		}
+		
 	}
 	function _itemMouseOut(id) {
-		TweenLite.to($('#btn'+id+" .ButtonTop .ButtonIcon"), 0.25,
+		TweenLite.to($('#btn'+id+" .ButtonTop .ButtonIcon"), tEffect,
 						{boxShadow:"0px 0px 0px"});
-		TweenLite.to($('#btn'+id+" .ButtonReflection .IconReflection"), 0.25,
+		TweenLite.to($('#btn'+id+" .ButtonReflection .IconReflection"), tEffect,
 						{boxShadow:"0px -5px 15px #000"});
 	}
 	function _itemMouseOver(id) {
 		//alert(TweenLite);
-		TweenLite.to($('#btn'+id+" .ButtonTop .ButtonIcon"), 0.25,
+		TweenLite.to($('#btn'+id+" .ButtonTop .ButtonIcon"), tEffect,
 						{boxShadow:"0px 0px 15px #fff"});
-		TweenLite.to($('#btn'+id+" .ButtonReflection .IconReflection"), 0.25,
+		TweenLite.to($('#btn'+id+" .ButtonReflection .IconReflection"), tEffect,
 						{boxShadow:"0px -5px 15px #555"});
 	}
 	function _itemMouseUp(id) {
@@ -199,12 +220,15 @@ var lvc = (function(){
 	// rotate on a timer
 	function _rotateTo(id) {
 		var d;
-		if ((d=shortDist(rings[curFolder].length,cur,id))) {
+		
+		//var theta = rot_angle()*180/Math.PI;
+		
+		if ((d=shortDist(rings[curLevel].length,cur,id))) {
 			enabled = false;
 			cur = id;
-			TweenLite.to($("#rotator"), d, 
+			TweenLite.to($("#rotator"), d,
 			{
-				directionalRotation:model.getLink(id).view.angle() + "deg_short",
+				directionalRotation: 180*(1+rings[curLevel][model.getLinkIndex(id)].t/Math.PI) + "deg_short",
 				onComplete:lvc.rotateDone
 			});
 			_itemMouseOut(id);
@@ -215,12 +239,13 @@ var lvc = (function(){
 		_rotateTick();
 		TweenLite.ticker.removeEventListener("tick", lvc.rotateTick);
 		enabled = true;
-		var theta = rot_angle();
 		model.eachIn(curFolder, function(i,obj) {
 			obj.view.draw();
-			obj.view.x = rings[curLevel][i].x;
-			obj.view.z = rings[curLevel][i].z;
+			
 		});
+		//theta *= 180 / Math.PI;
+		
+						
 	}
 	function _rotateTick() {
 		var theta = rot_angle();
@@ -240,7 +265,9 @@ var lvc = (function(){
 		mOut:_itemMouseOut,
 		mUp:_itemMouseUp,
 		rotateDone:_rotateDone,
-		rotateTick:_rotateTick
+		rotateTick:_rotateTick,
+		changeFolderDone:_changeFolderDone,
+		changeFolderTick:_changeFolderTick
 	};
 })();
-var t=0;
+window.t=0;
