@@ -159,6 +159,7 @@ var lvc = (function(){
 	function _changeFolder(id) {
 		
 		enabled=false;
+		cur = -1;
 		lastFolder = curFolder;
 		curFolder = id;
 		lastLevel = curLevel;
