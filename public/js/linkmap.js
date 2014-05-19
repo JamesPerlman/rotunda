@@ -20,18 +20,6 @@ var LinkMap = (function() {
 				directory.populate(json, function(obj) {
 					return new Button(obj);
 				});	
-				//debug
-				/*
-				var s = "";
-				for (var i = 0; i<directory.folders.length; i++) {
-					s += i+": ";
-					for( var j = 0; j<directory.folders[i].length;j++) {
-						s+=  directory.folders[i][j]+". "+directory.index[directory.folders[i][j]].title+ ", ";
-					}
-					s+="\n";
-				}
-				alert(s);
-				*/
 				onLoadData();
 			});
 			

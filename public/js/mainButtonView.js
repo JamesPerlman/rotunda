@@ -7,8 +7,6 @@ function ButtonView(obj) {
 	this.refImg = new Image();
 	this.refImg.src = this.icon.src;
 	this.offset = {x:0,y:0};
-	this.center = {x:0,y:0};
-	this.base = {x:0,y:0};
 	this.x=0;
 	this.z=0;
 	this.y=0;
@@ -45,18 +43,10 @@ ButtonView.prototype.build = function() {
 	
 	
 }
+/*** this should be optimized  ***/
 ButtonView.prototype.draw = function() {
-	//$(this.div).hide().show();
-	//$(this.ref).hide().show();
-	//$(this.top).hide().show();
 	$(this.grad).hide().show();
 	$(this.refImg).hide().show();
-	/*this.div.focus();
-	this.ref.focus();
-	this.top.focus();
-	this.grad.focus();
-	this.icon.focus();
-	this.refImg.focus();*/
 }
 ButtonView.prototype.appendTo = function(element) {
 	element.appendChild(this.div);
@@ -64,12 +54,6 @@ ButtonView.prototype.appendTo = function(element) {
 ButtonView.prototype.setBase = function(x,y) {
 	this.div.style.bottom = (y-this.top.offsetHeight) + "px";
 	this.div.style.left = this.ref.left = (x-this.offset.x) + "px";
-	//this.base = {x:x,y:y};
-}
-ButtonView.prototype.setCenter = function(x,y) {
-	this.div.style.bottom = (this.s*y+this.offset.y) +"%";
-	this.div.style.left = (this.s*x-this.offset.x) +"%";
-	this.center = {x:x,y:y};
 }
 ButtonView.prototype.setSize = function(size) {
 	this.top.style.width = this.ref.style.width = this.top.style.height = this.ref.style.height = size + "px";

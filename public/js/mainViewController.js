@@ -54,6 +54,20 @@ var lvc = (function(){
 		obj.setAttribute('onMouseOver', 'lvc.mOver('+id+')');
 		obj.setAttribute('onMouseOut', 'lvc.mOut('+id+')');
 	}
+	// load content
+	function loadContent(url) {
+		var info = url.split(":");
+		switch(info[0]) {
+			case "htm" :
+				$.get('html/'+info[1], function(data) {
+					$('#screen').html(data);
+				});
+			break;
+			case "img" :
+				$('#screen').html('<img src="img/'+info[1]+'">');
+			break;	
+		};
+	}
 	function render3D() {
 		model.eachFolder(function(i,f) {
 			if(i<=curLevel)
@@ -64,7 +78,7 @@ var lvc = (function(){
 	}
 	
 	function rot_angle() {
-		var mat = $("#rotator").css("transform").split(",");
+		var mat = $('#rotator').css('transform').split(',');
 		return Math.atan2(mat[1],mat[3]);
 	}
 	function setOffsets(){
@@ -181,8 +195,10 @@ var lvc = (function(){
 		var obj = model.getLink(id);
 		if( typeof obj.action == "number") { // folder
 			if (curFolder!=id) _changeFolder(id);
-		} else
+		} else {
+			loadContent(obj.action);
 			_rotateTo(id);
+		}
 	}
 	function _itemMouseOut(id) {
 		TweenLite.to($('#btn'+id+" .ButtonTop .ButtonIcon"), tEffect,

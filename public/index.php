@@ -14,9 +14,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>Welcome!</title>
-    <style>
-    
-    </style>
     <link href="styles/index.css" rel="stylesheet" type="text/css">
     <script type="text/javascript">
 		var linkData = LinkMap.initFromJSON("php/data.php?getlinks");
