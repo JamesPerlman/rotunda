@@ -41,8 +41,13 @@ var lvc = (function(){
 	
 	function addRing(n) {
 		var _max = Math.PI*1.5, _min=-Math.PI*.5;
-		if (n<=7) { _max=Math.PI*.499; _min=-Math.PI*.499; }
-		var theta = n==1 ? Math.PI*.5 : (_max-_min)/(n-1);
+		var theta;
+		if (n<=7) { 
+			_max=Math.PI*.499; _min=-Math.PI*.499;
+			
+			theta = n==1 ? Math.PI*.5 : (_max-_min)/(n-1);
+		} else
+			theta = (_max-_min)/n;
 		var o = Math.PI/2+_min;
 		var ring=[];
 		for (var i=0;i<n;i++)
