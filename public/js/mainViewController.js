@@ -3,7 +3,7 @@ var lvc = (function(){
 	var navFolders = [{x:0,z:0,id:0}];
 	var center = {x:500, y:500};
 	var cam = {x:0,y:.8,z:2};
-	var curLevel = 1, lastLevel=1, curFolder=0, lastFolder=0;
+	var curLevel = 1, lastLevel=1, curFolder=0, lastFolder=0, nav=[0];
 	var cscale = 600;
 	var cur = -1;
 	var enabled = true;
@@ -31,16 +31,11 @@ var lvc = (function(){
 					
 					if (i>curLevel)
 						btn.div.style.opacity = 0;
-					else {
-						btn.x = i*rings[i][j].x;
-						btn.z = i*rings[i][j].z;
-						//if (btn.z>cam.z+fLen)
-						//btn.div.style.opacity=0;
-						//alert (btn.x + ":" + btn.z);
-					}
+						
+					var k = Math.min(1.5,i);
+					btn.x = k*rings[i][j].x;
+					btn.z = k*rings[i][j].z;
 				};
-				//parent.appendChild(fe);
-				
 			});
 			
 			setupDisplay();
@@ -101,13 +96,6 @@ var lvc = (function(){
 	// position elements
 	function setupDisplay() {
 		render3D();
-		// make sure object offsets stay up to date
-		// put buttons in concentric rings
-		 // linkData.eachFolder
-		// center home button
-		//directory.links()[0].view.setBase(center.x,center.y);
-		
-		// put other buttons in concentric rings
 	}
 	// rotate shortest distance
 	function shortDist(m,c,t) {
@@ -166,9 +154,22 @@ var lvc = (function(){
 		curLevel = model.getFolderIndex(curFolder);
 		// check which direction we are moving (into a folder or out of one)
 		TweenLite.ticker.addEventListener("tick", lvc.changeFolderTick);
-		TweenLite.to($("#rotator"), tEffect, {directionalRotation: -90+"deg_short", onComplete:lvc.changeFolderDone});
-		var k = (id > lastFolder) ? 0 : 2;
+		TweenLite.to($("#rotator"), tEffect, {directionalRotation: "-90deg_short", onComplete:lvc.changeFolderDone});
+		
+		if (id > lastFolder) {
+			// moving into a new folder
+			nav.push(id);
+			k = 0;
+		} else {
+			// moving back to an old folder
+			var i = nav.indexOf(lastFolder);
+			nav.splice(i, nav.length-i);
+			k = 1.5;
+		}
+		
+		
 		model.eachIn(lastFolder, function(i,obj) {
+			if (obj.id==id)return;
 			TweenLite.to(obj.view, tEffect, {x:rings[lastLevel][i].x*k,z:rings[lastLevel][i].z*k});
 			TweenLite.to(obj.view.div, tEffect, {opacity:0});
 		});
@@ -177,10 +178,17 @@ var lvc = (function(){
 			obj.view.div.style.visibility = "visible";
 			TweenLite.to(obj.view, tEffect, {x:rings[curLevel][i].x,z:rings[curLevel][i].z});
 			TweenLite.to(obj.view.div, tEffect, {opacity:1});
-		});
+		});// arrange folders
+		var w=.27;
+		var l=-w*(nav.length-1)/2;
+		
+		for (var i=0; i<nav.length; i++) {
+			
+			TweenLite.to(model.getLink(nav[i]).view, tEffect, {x: l+w*i, z:0});
+		}
 	}
 	function _changeFolderTick() {
-		
+		setPos3D(model.getLink(0).view);
 		model.eachIn(curFolder, function(i,obj) { setPos3D(obj.view); });
 		model.eachIn(lastFolder, function(i,obj) { setPos3D(obj.view); });
 		sortByDepth();
@@ -188,7 +196,7 @@ var lvc = (function(){
 	function _changeFolderDone() {
 		enabled = true;
 		_changeFolderTick();
-		model.eachIn(lastFolder, function(i,obj) { obj.view.div.style.visibility="hidden"; });
+		model.eachIn(lastFolder, function(i,obj) { if (obj.id!=curFolder) obj.view.div.style.visibility="hidden"; });
 		TweenLite.ticker.removeEventListener("tick", lvc.changeFolderTick);
 		
 	}

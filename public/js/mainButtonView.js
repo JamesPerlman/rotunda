@@ -3,7 +3,7 @@ function ButtonView(obj) {
 	this.div = this.ref = this.top = this.grad = undefined;
 	this.model = obj;
 	this.icon = new Image();
-	this.icon.src = obj.icon;
+	this.icon.src = "img/icon/"+obj.icon;
 	this.refImg = new Image();
 	this.refImg.src = this.icon.src;
 	this.offset = {x:0,y:0};

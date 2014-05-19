@@ -30,23 +30,24 @@
   <body>
   	
     <section>
-      <nav>
-        <div id="topnav">
-        </div>
-        
-        <div id="navcontainer">
-          <div id="screen">
-            
+      <div>
+        <nav>
+          <div id="topnav">
           </div>
-          <div id="rotator"></div>
-          <canvas id="navcanvas" width="1000" height="500"></canvas>
-        </div>
-      </nav>
-      
-      <footer>
         
-      </footer>
+          <div id="navcontainer">
+            <div id="screen">
+            
+            </div>
+            <div id="rotator"></div>
+            <canvas id="navcanvas" width="1000" height="500"></canvas>
+          </div>
+        </nav>
+      
+        <footer>
+        
+        </footer>
+      </div>
     </section>
-
   </body>
 </html>
