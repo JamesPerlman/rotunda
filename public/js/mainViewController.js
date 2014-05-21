@@ -168,7 +168,6 @@ var lvc = (function(){
 			for (i=0;i<exit.length;i++) {
 				var obj = model.getLink(exit[i]),
 					f=model.getFolderIndex(obj.folder-1),
-					q=
 					r=rings[f][model.getLinkIndex(exit[i])];
 				TweenLite.to(obj.view, tEffect, {x:1.5*r.x, z:1.5*r.z});
 				TweenLite.to(obj.view.div, tEffect, {opacity: 0});
@@ -209,8 +208,16 @@ var lvc = (function(){
 		model.eachIn(lastFolder, function(i,obj) { if (obj.id!=curFolder) obj.view.div.style.visibility="hidden"; });
 		model.eachIn(curFolder, function(i, obj) { setPos3D(obj.view); obj.view.draw(); });
 		TweenLite.ticker.removeEventListener("tick", lvc.changeFolderTick);
-		for (i=1;i<exit.length;i++)
-			model.getLink(exit[i]).view.div.style.visibility = "hidden";
+		for (i=0;i<exit.length;i++) {
+			var obj = model.getLink(exit[i]),
+				r=rings[model.getFolderIndex(obj.folder-1)];
+				model.eachIn(obj.folder-1, function(j, o) {
+					o.view.x=1.5*r[j].x;
+					o.view.z=1.5*r[j].z;
+				});
+			
+			obj.view.div.style.visibility="hidden";
+		}
 		exit = [];
 		var w=.27,
 			l=-w*(nav.length-1)/2;		
