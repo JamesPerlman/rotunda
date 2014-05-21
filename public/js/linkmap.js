@@ -34,24 +34,21 @@ var LinkMap = (function() {
 				action(i, directory.folders[i]);
 		}
 		function enumLinksInFolder(fid,action) {
-			if(fid>=0&&fid<directory.folders.length) {
-				for (var i=0,folder = directory.folders[getFolderIndexByID(fid)];i<folder.length;i++)
-					action(i,directory.index[folder[i]]);
-			}
+			for (var i=0,folder = directory.folders[getFolderIndexByID(fid)];i<folder.length;i++)
+				action(i,directory.index[folder[i]]);
 		}
 		function getLinkByID(id,f) {
 			if (f!=undefined) return directory.index[directory.folders[f][id]];
 			return directory.index[id];
 		}
 		function getLinkIndexInFolderByID(id) {
-			for (var i=0,folder=directory.folders[directory.index[id].folder];i<folder.length;i++)
+			for (var i=0,folder=directory.folders[getFolderIndexByID(directory.index[id].folder-1)];i<folder.length;i++)
 				if (folder[i]==id) return i;
 		}
 		function getFolderIndexByID(id) {
 			for (var i=0;i<directory.fdex.length;i++)
-				if (directory.fdex[i]==id) {
+				if (directory.fdex[i]==id)
 					return i+1;
-				}
 		}
 		// singleton object
 		return {

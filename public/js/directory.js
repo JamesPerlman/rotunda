@@ -41,13 +41,6 @@ Directory.prototype.build = function(array, action) {
 	
 	return a;
 }
-	// navigate to subdirectory
-Directory.prototype.changeDirectory = function(id) {
-	if (id < count) {
-		parent = current;
-		current = id;
-	}
-}
 // populate data with associative array, add ID tags to objects and (optionally) perform an action (optionally) returning the object to add to data
 Directory.prototype.populate = function(JSON, action) {
 	this.items = this.build(JSON,action);

@@ -3,7 +3,7 @@ var lvc = (function(){
 	var cam = {x:0,y:.8,z:2},
 		center = {x:500, y:500},
 		cur = -1, curLevel = 1, curFolder=0,
-		enabled = true,
+		enabled = true, exit=[],
 		fLen = 400,
 		lastLevel=1, lastFolder=0,
 		minAngle = Math.PI/6,
@@ -160,9 +160,19 @@ var lvc = (function(){
 			nav.push(id);
 			k = 0;
 		} else { // moving back to an old folder
-			var i = nav.indexOf(lastFolder);
-			nav.splice(i, nav.length-i);
+			var i = nav.indexOf(id)+1;
+			exit = nav.splice(i, nav.length-i);
+			exit.shift();
 			k = 1.5;
+			// we must loop through all folders prior and remove them
+			for (i=0;i<exit.length;i++) {
+				var obj = model.getLink(exit[i]),
+					f=model.getFolderIndex(obj.folder-1),
+					q=
+					r=rings[f][model.getLinkIndex(exit[i])];
+				TweenLite.to(obj.view, tEffect, {x:1.5*r.x, z:1.5*r.z});
+				TweenLite.to(obj.view.div, tEffect, {opacity: 0});
+			}
 		}
 		model.eachIn(lastFolder, function(i,obj) {
 			if (obj.id==id)return;
@@ -181,9 +191,16 @@ var lvc = (function(){
 			TweenLite.to(model.getLink(nav[i]).view, tEffect, {x: l+w*i, z:0});
 	}
 	function _changeFolderTick() {
-		setPos3D(model.getLink(0).view);
 		model.eachIn(curFolder, function(i,obj) { setPos3D(obj.view); obj.view.draw(); });
 		model.eachIn(lastFolder, function(i,obj) { setPos3D(obj.view); obj.view.draw(); });
+		for (var i=0; i<exit.length; i++) {
+			var view = model.getLink(exit[i]).view;
+			setPos3D(view); view.draw();
+		}
+		for (var i=0; i<nav.length; i++) {
+			var view = model.getLink(nav[i]).view;
+			setPos3D(view); view.draw();
+		}
 		sortByDepth();
 	}
 	function _changeFolderDone() {
@@ -192,7 +209,16 @@ var lvc = (function(){
 		model.eachIn(lastFolder, function(i,obj) { if (obj.id!=curFolder) obj.view.div.style.visibility="hidden"; });
 		model.eachIn(curFolder, function(i, obj) { setPos3D(obj.view); obj.view.draw(); });
 		TweenLite.ticker.removeEventListener("tick", lvc.changeFolderTick);
-		
+		for (i=1;i<exit.length;i++)
+			model.getLink(exit[i]).view.div.style.visibility = "hidden";
+		exit = [];
+		var w=.27,
+			l=-w*(nav.length-1)/2;		
+		for (var i=0; i<nav.length; i++) {
+			var view = model.getLink(nav[i]).view;
+			view.x = l+w*i; view.z = 0;
+			setPos3D(view); view.draw();
+		}
 	}
 	// menu navigation
 	function _itemMouseClick(id) {
