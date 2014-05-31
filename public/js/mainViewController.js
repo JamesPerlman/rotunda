@@ -63,13 +63,16 @@ var lvc = (function(){
 	function loadContent(url) {
 		var info = url.split(":");
 		switch(info[0]) {
+			case "folder" :
+/*******/
+			break;
 			case "htm" :
 				$.get('html/'+info[1], function(data) {
 					$('#screen').html(data);
 				});
 			break;
 			case "img" :
-				$('#screen').html('<img src="img/'+info[1]+'">');
+				$('#screen').html('<img width="240px" height="240px" style="margin-left:130px" src="img/'+info[1]+'">');
 			break;	
 		};
 	}
@@ -109,18 +112,14 @@ var lvc = (function(){
 	}
 	// rotate shortest distance
 	function shortDist(m,c,t) {
+		if (c==-1) return 5;
 		if (t==c) return 0;
-		else return .5;
 		var k=(t>c)?1:-1;
-		return Math.min(m-k*(t-c),k*(t-c));
+		return Math.max(3,(m<=7)?k*(t-c):Math.min(m-k*(t-c),k*(t-c)));
 	}
 	function shortWay(m,c,t) {
 		// max, current, target
-		var k,r
-		// decimal modulo (m%t)
-		// quick floor ~~
-		// remainder
-		// r = t - ~~(t/m); 
+		var k,r 
 		if (c==t) return 0;
 		k=(t>c)?1:-1;
 		return m-k*(t-c)>k*(t-c) ? 1:-1;
@@ -135,7 +134,6 @@ var lvc = (function(){
 			for (var j=0;j<arr.length;j++)
 				// compare depth of object i to value in arr at index j
 				if (z<arr[j].z){
-					//alert(z+"<"+arr[j]+":"+(z<arr[j]));
 					p=j;// position sentinel (p=new position)
 					break;
 				}
@@ -174,7 +172,7 @@ var lvc = (function(){
 			}
 		}
 		model.eachIn(lastFolder, function(i,obj) {
-			if (obj.id==id)return;
+			if (obj.id==id) return;
 			TweenLite.to(obj.view, tEffect, {x:rings[lastLevel][i].x*k,z:rings[lastLevel][i].z*k});
 			TweenLite.to(obj.view.div, tEffect, {opacity:0});
 		});
@@ -220,7 +218,7 @@ var lvc = (function(){
 		}
 		exit = [];
 		var w=.27,
-			l=-w*(nav.length-1)/2;		
+			l=-w*(nav.length-1)/2;
 		for (var i=0; i<nav.length; i++) {
 			var view = model.getLink(nav[i]).view;
 			view.x = l+w*i; view.z = 0;
@@ -234,8 +232,8 @@ var lvc = (function(){
 		if( typeof obj.action == "number") { // folder
 			if (curFolder!=id) _changeFolder(id);
 		} else {
-			loadContent(obj.action);
 			_rotateTo(id);
+			loadContent(obj.action);
 		}
 	}
 	function _itemMouseOut(id) {
@@ -256,7 +254,7 @@ var lvc = (function(){
 		if ((d=shortDist(rings[curLevel].length,cur,id))) {
 			enabled = false;
 			cur = id;
-			TweenLite.to($("#rotator"), d,
+			TweenLite.to($("#rotator"), d*.15,
 			{
 				directionalRotation: 180*(1+rings[curLevel][model.getLinkIndex(id)].t/Math.PI) + "deg_short",
 				onComplete:lvc.rotateDone
@@ -266,10 +264,16 @@ var lvc = (function(){
 		};
 	}
 	function _rotateDone() {
+		var theta = rot_angle();
 		_rotateTick();
 		TweenLite.ticker.removeEventListener("tick", lvc.rotateTick);
 		enabled = true;
-		model.eachIn(curFolder, function(i,obj) { setPos3D(obj.view); obj.view.draw(); });				
+		model.eachIn(curFolder, function(i,obj) { 
+			obj.view.x = Math.cos(-Math.PI/2-theta+rings[curLevel][i].t);
+			obj.view.z = Math.sin(-Math.PI/2-theta+rings[curLevel][i].t);
+			setPos3D(obj.view);
+			obj.view.draw();
+		});				
 	}
 	function _rotateTick() {
 		var theta = rot_angle();

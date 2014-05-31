@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Untitled Document</title>
+<script src="../js/mouse.js"></script>
+<script src="../js/escher.js"></script>
+<script type="text/javascript" src="../js/jscolor/jscolor.js"></script>
+<link type="text/css" rel="stylesheet" media="screen" href="../styles/esch.css"/>
+</head>
+
+<body>
+    <canvas id="grid" style="visibility:visible" width="1024" height="1024"></canvas>
+    <canvas id="canvas" width="1024" height="1024"></canvas>
+    <img id="download_img" height="44px" width="44px"/>
+    <a href="#" id="download" onclick="esch.rast();">Download</a>
+    <span class="spaced">Select Color:&nbsp;<input class="color" value="000000" onChange="esch.setColor(this.value)"></span>
+    <button id="hideshow" onClick="document.getElementById('hideshow').innerHTML=esch.toggleGrid()?'Show Grid':'Hide Grid';">Hide Grid</button>
+    <button class="spaced" onClick="window.confirm('Are you sure you want to clear what you have done?')&&esch.clear()">Clear</button>
+    <script type="text/javascript">
+        esch.setCanvas(document.getElementById("canvas"), document.getElementById("grid"));
+        esch.init();
+    </script>
+</body>
+</html>

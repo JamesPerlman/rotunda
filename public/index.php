@@ -34,8 +34,9 @@
         
           <div id="navcontainer">
             <div id="screen">
-            
+             <img id="enlarge" src="img/helper/enlarge.jpg" width="100" height="100" alt="" style="visibility:hidden"/>
             </div>
+           
             <div id="rotator"></div>
             <canvas id="navcanvas" width="1000" height="500"></canvas>
           </div>

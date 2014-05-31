@@ -1,0 +1,20 @@
+@charset "UTF-8";
+/* CSS Document */
+.body {
+	-webkit-user-select: none;       
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+#canvas, #grid {
+	position:absolute;
+	left:0px;
+	margin-top:54px;
+}
+#hideshow, #download, .spaced { float: left; margin-left:20px; margin-top:10px; }
+#grid { border: solid thin black; }
+#download_img {
+	margin-left:64px;
+	float: left;
+}
