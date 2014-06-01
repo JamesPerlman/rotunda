@@ -37,7 +37,6 @@ var MPlug = (function() {
 		};
 	};
 	return {
-		update: updateCursor,
-		offset: getCumulativeOffset
+		update: updateCursor
 	}
 })();

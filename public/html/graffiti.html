@@ -3,10 +3,25 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Graffiti Board</title>
+<style type="text/css" media="screen">
+	#canvas, #bg {
+		position: absolute;
+		left: 0px;
+		top: 44px;
+	}
+</style>
+<script src="../js/mouse.js"></script>
+<script src="../js/draw.js"></script>
 </head>
 
 <body>
+<span id="status"></span>
+<img id="bg" src="../img/graffiti/canvas.jpg"/>
 <canvas id="canvas" width="1024" height="1024">
 </canvas>
+
+<script>
+	draw.init();
+</script>
 </body>
 </html>

@@ -44,7 +44,7 @@ var esch = (function(m) {
 		ctx.lineWidth = 0;	
 		var drawSquare = function (k,ctx) {
 			ctx.translate(canvas.width/(2*s), k*canvas.height/(2*s));
-			ctx.strokeRect(0,0,(canvas.width)/s,(canvas.height)/s);	
+			ctx.strokeRect(0,0,(canvas.width)/s,(canvas.height)/s);
 		}
 		
 		ctx.strokeStyle='#000';
