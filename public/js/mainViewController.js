@@ -62,19 +62,40 @@ var lvc = (function(){
 	// load content
 	function loadContent(url) {
 		var info = url.split(":");
-		switch(info[0]) {
-			case "folder" :
-/*******/
-			break;
-			case "htm" :
+		if (info[0]=="img")
+			loadImage(info[1]);
+		else {
+			if (info[0]=="folder") {
+				TweenLite.to($('#screen'), tEffect, {marginLeft:-250, width:500});
+				$('#enlarge').css('visibility','hidden');
+				$('#screen').html(info[1]||'&nbsp;');
+			} else if  (info[0]=="htm") {
 				$.get('html/'+info[1], function(data) {
 					$('#screen').html(data);
+					$('#enlarge').css('visibility','visible');
+					TweenLite.to($('#screen'), tEffect, {marginLeft:-250, width:500});
+					TweenLite.to($('#enlarge'), tEffect, {marginLeft:750,marginTop:-214});
 				});
-			break;
-			case "img" :
-				$('#screen').html('<img width="240px" height="240px" style="margin-left:130px" src="img/'+info[1]+'">');
-			break;	
+			} else if (info[0]=="app") {
+				$.get('html/'+info[1], function(data) {
+					$('#enlarge').css('visibility','visible');
+					$('#screen').html(data);
+					$('#screen').insertAfter('#desc');
+				});
+			}
 		};
+	}
+	function loadImage(url) {
+		var img = new Image();
+		img.onload = function() {
+			var w=img.width,h=img.height,a=w>h;
+			// resize image
+			img.width = 240*(a?1:w/h);
+			img.height = 240*(a?h/w:1);
+			$('#screen').html(img);
+		TweenLite.to($('#screen'), tEffect, {width:img.width, marginLeft:-img.width/2, onComplete: function() { $('#enlarge').css({marginLeft:'618px',visibility:'visible'})}});
+		}
+		img.src = 'img/'+url;
 	}
 	function render3D() {
 		model.eachFolder(function(i,f) {
@@ -202,9 +223,13 @@ var lvc = (function(){
 	}
 	function _changeFolderDone() {
 		enabled = true;
-		_changeFolderTick();
 		model.eachIn(lastFolder, function(i,obj) { if (obj.id!=curFolder) obj.view.div.style.visibility="hidden"; });
-		model.eachIn(curFolder, function(i, obj) { setPos3D(obj.view); obj.view.draw(); });
+		model.eachIn(curFolder, function(i, obj) {
+			obj.view.x=rings[curLevel][i].x;
+			obj.view.z=rings[curLevel][i].z;
+			setPos3D(obj.view);
+			obj.view.draw();
+		});
 		TweenLite.ticker.removeEventListener("tick", lvc.changeFolderTick);
 		for (i=0;i<exit.length;i++) {
 			var obj = model.getLink(exit[i]),
@@ -231,6 +256,7 @@ var lvc = (function(){
 		var obj = model.getLink(id);
 		if( typeof obj.action == "number") { // folder
 			if (curFolder!=id) _changeFolder(id);
+			loadContent('folder');
 		} else {
 			_rotateTo(id);
 			loadContent(obj.action);

@@ -1,6 +1,8 @@
 @charset "UTF-8";
 /* CSS Document */
-.body {
+.app {
+	background-color:#FFFFFF;
+	color:#000000;
 	-webkit-user-select: none;       
 	-moz-user-select: none;
 	-ms-user-select: none;

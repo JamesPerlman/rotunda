@@ -20,7 +20,6 @@
 		linkData.setOnLoad(function(){
 			lvc.init(linkData,document.getElementById("navcontainer"));
 		});
-	
 	</script>
     
   </head>  
@@ -34,9 +33,9 @@
         
           <div id="navcontainer">
             <div id="screen">
-             <img id="enlarge" src="img/helper/enlarge.jpg" width="100" height="100" alt="" style="visibility:hidden"/>
+            
             </div>
-           
+            <img id="enlarge" src="img/helper/enlarge.jpg" width="20" height="20" alt="" style="margin-left:750px; margin-top:-214px; visibility: hidden"/>
             <div id="rotator"></div>
             <canvas id="navcanvas" width="1000" height="500"></canvas>
           </div>

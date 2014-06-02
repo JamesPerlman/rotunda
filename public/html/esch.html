@@ -1,14 +1,15 @@
-<!doctype html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Untitled Document</title>
+<div id="desc">
+<h1>Escherizer</h1>
+<br>
+<h2>A tribute to M.C. Escher</h2>
+<br><br>
+Drawdesigns on a canvas and have fun with tessellated geometries.<br>
+</div>
+<div id="app" style="visibility:hidden">
 <script src="../js/mouse.js"></script>
 <script src="../js/escher.js"></script>
 <script src="../js/jscolor/jscolor.js"></script>
-<link type="text/css" rel="stylesheet" media="screen" href="../styles/esch.css"/>
-</head>
-
+<head><link type="text/css" rel="stylesheet" media="screen" href="../styles/esch.css"/></head>
 <body>
     <canvas id="grid" style="visibility:visible" width="1024" height="1024"></canvas>
     <canvas id="canvas" width="1024" height="1024"></canvas>
@@ -20,5 +21,4 @@
         esch.setCanvas(document.getElementById("canvas"), document.getElementById("grid"));
         esch.init();
     </script>
-</body>
-</html>
+</div>

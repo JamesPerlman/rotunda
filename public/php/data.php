@@ -3,7 +3,7 @@
 		// here we would connect to MySQL and request links
 		// for now we will use an array;
 		include 'db.php';
-		$result = mysql_query("SELECT id,title,icon,action,folder FROM `navigation`");
+		$result = mysql_query("SELECT * FROM `navigation`");
 		$index = array();
 		// get as linear list
 		while ($row = mysql_fetch_assoc($result)) {

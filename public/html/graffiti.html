@@ -7,20 +7,44 @@
 	#canvas, #bg {
 		position: absolute;
 		left: 0px;
-		top: 44px;
+		top: 64px;
+	}
+	.spaced {
+		margin-left: 20px;
+	}
+	#status {
+		float:right;
+		margin-right: 20px;
+	}
+	#thick {
+		display: inline-block;
+		background-color: black;
+		border-radius:15px;
+		width:1px;
+		height:1px;
+		border: solid thin black;
+		margin-top: 15px;
+		position: absolute;
+		left:512px;
 	}
 </style>
+
+<script src="../js/jscolor/jscolor.js"></script>
 <script src="../js/mouse.js"></script>
 <script src="../js/draw.js"></script>
+
 </head>
 
 <body>
-<span id="status"></span>
+<span class="spaced">Select Color:&nbsp;<input class="color" value="000000" onChange="draw.setColor(this.value);t.style.backgroundColor=t.style.borderColor='#'+this.value;"></span>
+<span class="spaced">Thickness:&nbsp;</span><input type="range" min="1" max="30" step=".1" value="1" onchange="draw.setThick(this.value);t.style.width=t.style.height=this.value+'px';t.style.marginTop=15-this.value/2 + 'px';" /><div id="thick"></div>
+<span id="status">Start drawing below</span>
 <img id="bg" src="../img/graffiti/canvas.jpg"/>
-<canvas id="canvas" width="1024" height="1024">
+<canvas id="canvas" width="1024" height="1024" style="border: solid thin black">
 </canvas>
 
 <script>
+	var t=document.getElementById('thick');
 	draw.init();
 </script>
 </body>

@@ -4,7 +4,9 @@ body {
   background: black;
   color: white;
   font: Arial; }
-
+a {
+  color: #6FF;	
+}
 .Button {
   position: absolute;
   cursor: pointer;
@@ -83,8 +85,9 @@ body {
   border-right: none; }
 
 #screen {
+  text-align: center;
   position: absolute;
-  overflow: scroll;
+  overflow: hidden;
   padding: 10px;
   margin-top: -216px;
   top: 0px;
@@ -115,6 +118,5 @@ body {
   -o-transform: rotate(-90deg); }
 
 #enlarge {
-	float: right;
-	width: 30px;
-	height: 30px; }
+	position: absolute;
+	border: solid thin black; }
