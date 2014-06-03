@@ -24,16 +24,17 @@
     
   </head>  
   <body>
-  	
     <section>
+      
       <div>
         <nav>
           <div id="topnav">
           </div>
         
           <div id="navcontainer">
+      
             <div id="screen">
-            
+            <img src="img/folders/Home.jpg">
             </div>
             <img id="enlarge" src="img/helper/enlarge.jpg" width="20" height="20" alt="" style="margin-left:750px; margin-top:-214px; visibility: hidden"/>
             <div id="rotator"></div>

@@ -5,6 +5,7 @@ var lvc = (function(){
 		cur = -1, curLevel = 1, curFolder=0,
 		enabled = true, exit=[],
 		fLen = 400,
+		fullscreen=false,
 		lastLevel=1, lastFolder=0,
 		minAngle = Math.PI/6,
 		model, navFolders = [{x:0,z:0,id:0}],
@@ -42,9 +43,13 @@ var lvc = (function(){
 	function addRing(n) {
 		var _max = Math.PI*1.5, _min=-Math.PI*.5;
 		var theta;
-		if (n<=7) { 
-			_max=Math.PI*.499; _min=-Math.PI*.499;
-			
+		if (n<=7) {
+			if (n==1)
+				_max=_min=0;
+			else {
+				var inc = Math.PI/(7*2)
+				_max=inc*n; _min=-_max;
+			}
 			theta = n==1 ? Math.PI*.5 : (_max-_min)/(n-1);
 		} else
 			theta = (_max-_min)/n;
@@ -59,6 +64,7 @@ var lvc = (function(){
 		obj.setAttribute('onMouseOver', 'lvc.mOver('+id+')');
 		obj.setAttribute('onMouseOut', 'lvc.mOut('+id+')');
 	}
+	
 	// load content
 	function loadContent(url) {
 		var info = url.split(":");
@@ -72,15 +78,12 @@ var lvc = (function(){
 			} else if  (info[0]=="htm") {
 				$.get('html/'+info[1], function(data) {
 					$('#screen').html(data);
-					$('#enlarge').css('visibility','visible');
 					TweenLite.to($('#screen'), tEffect, {marginLeft:-250, width:500});
-					TweenLite.to($('#enlarge'), tEffect, {marginLeft:750,marginTop:-214});
 				});
 			} else if (info[0]=="app") {
-				$.get('html/'+info[1], function(data) {
-					$('#enlarge').css('visibility','visible');
-					$('#screen').html(data);
-					$('#screen').insertAfter('#desc');
+				$.get('html/'+info[1]+'.desc', function(data) {
+					$('#enlarge').css('visibility','hidden');
+					$('#screen').html(data+'<br><a href="html/'+info[1]+'" target="_blank">Launch App</a>');
 				});
 			}
 		};
@@ -90,10 +93,14 @@ var lvc = (function(){
 		img.onload = function() {
 			var w=img.width,h=img.height,a=w>h;
 			// resize image
-			img.width = 240*(a?1:w/h);
-			img.height = 240*(a?h/w:1);
+			var H=240*(a?1:h/w);
+			var W=240*(a?w/h:1);
 			$('#screen').html(img);
-		TweenLite.to($('#screen'), tEffect, {width:img.width, marginLeft:-img.width/2, onComplete: function() { $('#enlarge').css({marginLeft:'618px',visibility:'visible'})}});
+			document.getElementById('enlarge').src='img/helper/enlarge.jpg';
+			TweenLite.to($('#screen'), tEffect, {width:W, height:H, marginLeft:-W/2, onComplete: function() { $('#enlarge').css({marginLeft:478+W/2 + 'px',visibility:'visible'})}});
+			document.getElementById('enlarge').onclick = function() { lvc.toggleImage(w,h,W,H) };
+			img.style.width= '100%';
+			img.style.height = '100%';
 		}
 		img.src = 'img/'+url;
 	}
@@ -168,12 +175,35 @@ var lvc = (function(){
 		for (var i=0;i<arr.length;i++)
 			model.getLink(arr[i].id).view.div.style.zIndex = i;
 	}
+	function toggleImage(w,h,w2,h2) {
+		if (!enabled) return;
+		
+		enabled = false;
+		var en = document.getElementById('enlarge'),f;
+		if (/^.+enlarge\.jpg$/.test(en.src)) {
+			en.onclick=function(){lvc.toggleImage(w2,h2,w,h)};
+			en.src='img/helper/minify.jpg';
+			fullscreen = true;
+		} else {
+			en.onclick=function(){lvc.toggleImage(w2,h2,w,h)};
+			en.src='img/helper/enlarge.jpg';
+			fullscreen = false;
+		}
+		TweenLite.to($('#screen'), tEffect, {marginLeft: -w/2, width:w, height:h});
+		TweenLite.to($('#enlarge'), tEffect, {marginLeft:479+w/2, onComplete:function(){enabled=true;}});
+			
+	}
 	// animation
 	function _changeFolder(id) {
 		enabled=false; cur = -1; lastFolder = curFolder; curFolder = id; lastLevel = curLevel;
 		curLevel = model.getFolderIndex(curFolder);
 		TweenLite.ticker.addEventListener("tick", lvc.changeFolderTick);
 		TweenLite.to($("#rotator"), tEffect, {directionalRotation: "-90deg_short", onComplete:lvc.changeFolderDone});
+		
+		var f_img = new Image();
+		f_img.onload = function() { $('#screen').html(f_img); };
+		f_img.src = 'img/folders/'+model.getLink(id).title+'.jpg';
+		
 		
 		if (id > lastFolder) { // moving into a new folder
 			nav.push(id);
@@ -319,6 +349,7 @@ var lvc = (function(){
 		mOut:_itemMouseOut,
 		rotateDone:_rotateDone,
 		rotateTick:_rotateTick,
+		toggleImage:toggleImage,
 		changeFolderDone:_changeFolderDone,
 		changeFolderTick:_changeFolderTick
 	};
